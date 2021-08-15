@@ -6,6 +6,7 @@ Use γ = 0.9. Return the optimal value function and the optimal policy.
 """
 import gym
 import random
+import numpy as np
 
 actions = {
     'Left': 0,
@@ -15,17 +16,18 @@ actions = {
 IS_STOCHASTC=False
 
 def main():
-    #random_acts(IS_STOCHASTC)
-    value_iter(IS_STOCHASTC)
-    policy_iter(IS_STOCHASTC)
+    tol=1e-3
+    random_acts(IS_STOCHASTC)
+    #value_iter(IS_STOCHASTC,tol)
+    #policy_iter(IS_STOCHASTC,tol)
 
 
 
-def value_iter(IS_STOCHASTC):
+def value_iter(IS_STOCHASTC,tol):
     env = make_env(IS_STOCHASTC)
     env.reset()
     env.render()
-    for i in range(5):
+    for i in range(10):
         new_state, reward, done, info = env.step()
         env.render()
         print("Reward: {:.2f}".format(reward))
@@ -34,7 +36,7 @@ def value_iter(IS_STOCHASTC):
             break
 
 
-def policy_iter(IS_STOCHASTC):
+def policy_iter(IS_STOCHASTC,tol):
     env = make_env(IS_STOCHASTC)
     env.reset()
     env.render()
@@ -57,7 +59,7 @@ def random_acts(IS_STOCHASTC):
     env = gym.make("FrozenLake-v0", is_slippery=False) instead.
     In order to make your custom map or use other maps add 
     map_name='8x8'(or the custom one you've made) inside the parentheses """
-    for iter in range(3):
+    for iter in range(10):
         random_act=random.choice(list(actions.values()))
         new_state, reward, done, info = env.step(random_act)
         env.render()
@@ -71,6 +73,10 @@ def make_env(IS_STOCHASTC):
         env=gym.make("FrozenLake-v0",is_slippery=False)
     return env
 
+def isover(V,V_new,tol):
+	if np.all(np.abs(V - V_new) < tol) :    #np.sum(np.sqrt(np.square(V_new-V))) < tol
+		return 1
+	return 0
 
 if __name__ == '__main__':
     main()
